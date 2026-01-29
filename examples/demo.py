@@ -177,12 +177,65 @@ def run_demo(
               f"{p.num_mutations} mutations")
 
     print()
+
+    # PARAMETER INFERENCE
+    print("\n")
+    print("=" * 60)
+    print("PARAMETER INFERENCE")
+    print("=" * 60)
+    print()
+    print("Inferring population size from particle ensemble...")
+    print()
+
+    # Try different inference methods
+    methods = ["tmrca", "pairwise", "events"]
+    method_names = {
+        "tmrca": "TMRCA-based",
+        "pairwise": "Pairwise coalescence",
+        "events": "All coalescence events"
+    }
+
+    for method in methods:
+        print(f"Method: {method_names[method]}")
+        inference_results = smc.infer_constant_Ne(
+            particles=results.final_particles,
+            method=method
+        )
+
+        comparison = smc.compare_to_true_parameters(
+            inference_results,
+            true_Ne=population_size
+        )
+
+        print(f"  Estimated Ne: {inference_results.Ne_estimate:,.0f} ± {inference_results.Ne_std:,.0f}")
+        print(f"  True Ne: {population_size:,.0f}")
+        print(f"  Relative error: {comparison['relative_error_percent']:.1f}%")
+
+        if comparison['within_1_std']:
+            print(f"  ✓ True value within 1σ")
+        elif comparison['within_2_std']:
+            print(f"  ✓ True value within 2σ")
+        else:
+            print(f"  ✗ True value outside 2σ")
+        print()
+
+    # Use TMRCA method for final summary
+    print("Using TMRCA-based inference for final results:")
+    final_inference = smc.infer_constant_Ne(
+        particles=results.final_particles,
+        method="tmrca"
+    )
+
+    print()
+    print(smc.summarize_inference(final_inference, true_Ne=population_size))
+
+    print()
     print("=" * 60)
     print("DEMO COMPLETE")
     print("=" * 60)
     print()
 
-    return results
+    return results, final_inference
 
 
 def test_likelihood_calculation():
@@ -228,7 +281,7 @@ if __name__ == "__main__":
     test_likelihood_calculation()
 
     # Run main demo
-    results = run_demo(
+    results, inference = run_demo(
         num_particles=50000,
         num_samples=20,
         sequence_length=100_000,
@@ -239,3 +292,5 @@ if __name__ == "__main__":
     )
 
     print("Demo finished successfully!")
+    print()
+    print(f"Final Ne estimate: {inference.Ne_estimate:,.0f} (true: 10,000)")

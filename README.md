@@ -17,12 +17,6 @@ pixi install
 pixi shell
 ```
 
-Dependencies:
-- msprime >=1.3.4
-- tskit >=1.0.0
-- numpy >=2.4
-- scipy >=1.17
-
 ## Architecture
 
 ```

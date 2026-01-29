@@ -56,6 +56,19 @@ from .extension import (
     ParticleExtender
 )
 
+# Inference
+from .inference import (
+    InferenceResults,
+    extract_coalescence_events,
+    extract_coalescence_times_per_tree,
+    estimate_Ne_from_coalescence_times,
+    estimate_Ne_from_tmrca,
+    estimate_Ne_from_pairwise_coalescence,
+    infer_constant_Ne,
+    compare_to_true_parameters,
+    summarize_inference
+)
+
 __all__ = [
     # Version
     "__version__",
@@ -91,7 +104,15 @@ __all__ = [
     # Extension
     "extend_particle_simple",
     "extract_recombination_events",
-    "extract_coalescence_events",
     "simplify_particle",
     "ParticleExtender",
+    # Inference
+    "InferenceResults",
+    "extract_coalescence_times_per_tree",
+    "estimate_Ne_from_coalescence_times",
+    "estimate_Ne_from_tmrca",
+    "estimate_Ne_from_pairwise_coalescence",
+    "infer_constant_Ne",
+    "compare_to_true_parameters",
+    "summarize_inference",
 ]
